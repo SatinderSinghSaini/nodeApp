@@ -22,8 +22,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req,res,next) => {
-  User.findById("61c9b3804dcda2509df3df1c").then(user => {
-    req.user = user;
+  User.findById("61cbdef7cf6f451a37fc4992").then(user => {
+    console.log('User:', user);
+    req.user = new User(user.name, user.email, user.cart, user._id);//db returs normal user data, so created user object, 
+                                                                    //with which we can interact with user model methods
     next();
   })
   .catch(err => {
