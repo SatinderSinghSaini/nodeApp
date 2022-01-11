@@ -19,7 +19,9 @@ exports.postAddProduct = (req, res, next) => {
       title: title, 
       imageUrl: imageUrl, 
       price: price, 
-      description: description}
+      description: description,
+      userId: req.user //It will pick Id from Mongoose object
+    }
     );  
     product.save()
     .then(result => {
@@ -68,14 +70,12 @@ exports.postEditProduct = (req, res, next) => {
     product.description = updatedDesc;
     return product.save();
   }).then(result => {
-      console.log('UPDATED PRODUCT!');
       res.redirect('/admin/products');
     })
     .catch(err => console.log(err));
 };
 
 exports.getProducts = (req, res, next) => {
-  console.log('in admin');
   Product.find()
     .then(products => {
       res.render('admin/products', {
