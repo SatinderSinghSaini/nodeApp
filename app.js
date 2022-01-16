@@ -18,6 +18,8 @@ app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
+
 const req = require('express/lib/request');
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -32,9 +34,10 @@ app.use((req,res,next) => {
     console.log(err)
   });
 });
+
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
-
+app.use(authRoutes);
 
 mongoose.connect('mongodb+srv://satinder:usrPwd%40123_321@cluster0.zrrzq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
 .then(() =>{
