@@ -1,15 +1,18 @@
 const path = require('path');
-
 const express = require('express');
 const bodyParser = require('body-parser');
-
-const errorController = require('./controllers/error');
-
-// const mongoConnect = require('./util/database').mongoConnect;
-const User = require('./models/user');
-
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDbStore = require('connect-mongodb-session')(session);
 
+const MONGODB_URI = 'mongodb+srv://satinder:usrPwd%40123_321@cluster0.zrrzq.mongodb.net/myFirstDatabase';
+
+const store = new MongoDbStore({
+  uri: MONGODB_URI,
+  collection: 'sessions'
+})
+
+const User = require('./models/user');
 
 const app = express();
 
@@ -20,11 +23,9 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
-const req = require('express/lib/request');
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(session({secret:'My Secret', resave:false, saveUninitialized: false, store: store}));
 app.use((req,res,next) => {
   User.findById("61d7d4fc87de0ebfd9343b56").then(user => {
     req.user = user;     //Mongoose user object
@@ -39,7 +40,7 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
-mongoose.connect('mongodb+srv://satinder:usrPwd%40123_321@cluster0.zrrzq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+mongoose.connect(MONGODB_URI)
 .then(() =>{
   User.findOne()
   .then(user => {
@@ -56,6 +57,6 @@ mongoose.connect('mongodb+srv://satinder:usrPwd%40123_321@cluster0.zrrzq.mongodb
     app.listen(3000);
   });  
 })
-.catch(err => console.log(err));
+.catch(err => console.log(err ));
 
 
