@@ -6,7 +6,7 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
-    isLoggedIn: req.get('Cookie').trim().split('=')[1]
+    isLoggedIn: req.session.isLoggedIn
   });
 };
 
@@ -50,7 +50,7 @@ exports.getEditProduct = (req, res, next) => {
         path: '/admin/edit-product',
         editing: editMode,
         product: product,
-        isLoggedIn: req.get('Cookie').trim().split('=')[1]
+        isLoggedIn: req.session.isLoggedIn
       });
     })
     .catch(err => console.log(err));
@@ -59,7 +59,6 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditProduct = (req, res, next) => {
   
   const prodId = req.body.productId;
-  console.log('postEditProduct',prodId);
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
@@ -84,7 +83,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: 'Admin Products',
         path: '/admin/products',
-        isLoggedIn: req.get('Cookie').trim().split('=')[1]
+        isLoggedIn: req.session.isLoggedIn
       });
     })
     .catch(err => console.log(err));

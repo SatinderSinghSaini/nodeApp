@@ -10,7 +10,7 @@ const MONGODB_URI = 'mongodb+srv://satinder:usrPwd%40123_321@cluster0.zrrzq.mong
 const store = new MongoDbStore({
   uri: MONGODB_URI,
   collection: 'sessions'
-})
+});
 
 const User = require('./models/user');
 
@@ -27,7 +27,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret:'My Secret', resave:false, saveUninitialized: false, store: store}));
 app.use((req,res,next) => {
-  User.findById("61d7d4fc87de0ebfd9343b56").then(user => {
+  if(!req.session.user){
+    return next();
+  }
+  User.findById(req.session.user._id).then(user => {
     req.user = user;     //Mongoose user object
     next();
   })
